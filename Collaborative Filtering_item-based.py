@@ -7,24 +7,9 @@ import pandas as pd
 from scipy.spatial.distance import cosine
 
 
-def readCSV(fileLocation):
-    return pd.read_csv(fileLocation)
-
-def convertToWide(data,rowIndex, colIndex, fillTable):
-    return data.pivot(rowIndex, colIndex, fillTable) #Converting data from long to wide format
-
 def createDf(dindex, dcolumns):
     return pd.DataFrame(index=dindex,
                         columns=dcolumns)
-
-
-data=readCSV("/home/vaibhavi/machine-learning/cf_mba/data/groceries.csv")
-data["Quantity"]=1          #Assume that for all items only one quantity was bought
-
-dataWide=convertToWide(data, "Person", "item", "Quantity")
-
-dataWide.fillna(0, inplace=True)            #Replace NA with 0
-
 
 
 def findSimilarity(dataToBeFilled, dataUsed):                   # Similarity Measure using cosine distances
@@ -43,7 +28,7 @@ def findNeighbours(neighbours, data, number):
 
 
 
-def itemBased(number):                        # Item-based Collaborative Filtering
+def itemBased(number, dataWide):                        # Item-based Collaborative Filtering
     data_ib = dataWide.copy()
     data_ib = data_ib.reset_index()             #To make the 'Person' field just another column and not an index
     data_ib = data_ib.drop("Person", axis=1)        # In item based collaborative filtering we do not care about the user column, hence drop it
@@ -53,10 +38,19 @@ def itemBased(number):                        # Item-based Collaborative Filteri
 
     data_neighbours = createDf(data_ibs.columns,range(1,number+1))
     data_neighbours= findNeighbours(data_neighbours, data_ibs, number)
-    print(data_neighbours.tail(5))
+    return data_neighbours
 
-itemBased(5)
+def main_function():
+    data=pd.read_csv("/home/vaibhavi/machine-learning/cf_mba/data/groceries.csv")
+    data["Quantity"]=1          #Assume that for all items only one quantity was bought
 
+    dataWide=data.pivot("Person", "item", "Quantity")           #Converting data from long to wide format
+
+    dataWide.fillna(0, inplace=True)            #Replace NA with 0
+    neighbours=itemBased(5, dataWide)
+    print(neighbours.head(5))
+
+main_function()
 
 
 
