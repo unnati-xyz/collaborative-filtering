@@ -41,3 +41,13 @@ for i in range(0,len(user_sim_smaller.columns)):
     if user_neighbours.iloc[i,0] != i:
         c=user_neighbours.iloc[i,:][user_neighbours.iloc[i,:] == i].index.tolist()
         user_neighbours.iloc[i,0],user_neighbours.iloc[i,c[0]-1]=swap(user_neighbours.iloc[i,0], user_neighbours.iloc[i,c[0]-1])
+
+user_item_neighbours = pd.DataFrame(index=user_sim_smaller.columns,columns=range(1,10))
+
+
+user_purchases=pd.DataFrame(index=user_sim_smaller.columns,columns=range(max(data.Person.value_counts())))
+for i in range(len(user_sim_smaller.columns)):
+    user_purchases.iloc[i,:]=pd.Series(data_purchases.iloc[i,:][data_purchases.iloc[i,:]==1].index.tolist())
+
+
+user_purchases=user_purchases.fillna(0)
