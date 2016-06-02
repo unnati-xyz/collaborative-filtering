@@ -50,7 +50,8 @@ def main():
     neighbours=itemBased(5, dataWide)
     print(neighbours.head(5))
 
-main_function()
+if __name__ == '__main__':
+    main()
 
 
 
