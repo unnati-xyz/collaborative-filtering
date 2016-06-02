@@ -30,6 +30,14 @@ for i in range(0,len(user_sim_smaller.columns)) :
       user_sim_smaller.ix[i,j] = cosine(data_purchases.ix[i,:],data_purchases.ix[j,:])
 
 
+user_neighbours = pd.DataFrame(index=user_sim_smaller.columns,columns=range(1,5))
 
+def swap(a,b):
+    return b,a
 
-
+# Loop through our similarity dataframe and fill in neighbouring item names
+for i in range(0,len(user_sim_smaller.columns)):
+    user_neighbours.ix[i, :] = np.array(user_sim_smaller.ix[i,:].sort_values(ascending=True)[0:4].index)
+    if user_neighbours.iloc[i,0] != i:
+        c=user_neighbours.iloc[i,:][user_neighbours.iloc[i,:] == i].index.tolist()
+        user_neighbours.iloc[i,0],user_neighbours.iloc[i,c[0]-1]=swap(user_neighbours.iloc[i,0], user_neighbours.iloc[i,c[0]-1])
