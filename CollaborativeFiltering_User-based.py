@@ -51,3 +51,11 @@ for i in range(len(user_sim_smaller.columns)):
 
 
 user_purchases=user_purchases.fillna(0)
+
+recommend=pd.DataFrame(index=user_sim_smaller.columns, columns=range(1,11))
+for j in range(len(user_sim_smaller.columns)):
+    itemslist=[]
+    for i in range(2,5):
+        items=[user_purchases.ix[user_neighbours.ix[j,i]][k] for k in range(10) if user_purchases.ix[user_neighbours.ix[j,i]][k]!=0]
+        itemslist=list(set(itemslist+items))
+    recommend.iloc[j,:]=pd.Series(itemslist[0:11])
