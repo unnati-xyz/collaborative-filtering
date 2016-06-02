@@ -40,7 +40,7 @@ def itemBased(number, dataWide):                        # Item-based Collaborati
     data_neighbours= findNeighbours(data_neighbours, data_ibs, number)
     return data_neighbours
 
-def main_function():
+def main():
     data=pd.read_csv("/home/vaibhavi/machine-learning/cf_mba/data/groceries.csv")
     data["Quantity"]=1          #Assume that for all items only one quantity was bought
 
