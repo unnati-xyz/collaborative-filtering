@@ -1,10 +1,26 @@
-class add:
-    def __init__(self, a, b):
-        s=self.summation(a,b)
-        print(s)
+class yo:
+    def __init__(self):
+        print("Yo yo honey singh")
+        self.d=25
 
-    def summation(self, a, b):
-        return a+b
+class parent(yo):
+    def __init__(self):
+        yo.__init__(self)
+        print("Howdy doWdy!")
+        self.var=23
 
-if __name__ == '__main__':
-    r=add(3,4)
+
+    def pr(self):
+        print(self.d)
+
+
+class child(parent, yo):
+
+
+    def print(self):
+        print(self.var, self.d)
+
+
+
+c=child()
+c.print()
