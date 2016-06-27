@@ -8,6 +8,20 @@ from scipy.spatial.distance import cosine
 
 class DataHandler: 
 
+    def initialise(self):
+        self.data=pd.read_csv("/home/vaibhavi/machine-learning/cf_mba/data/groceries.csv")
+        self.data["Quantity"] = 1                                               # Assume that for all items only one quantity was bought
+        self.dataWide = self.data.pivot("Person", "item", "Quantity")           # Converting data from long to wide format
+        self.dataWide.fillna(0, inplace=True)                                   # Replace NA with 0
+        self.data_purchases = self.dataWide.copy()
+        self.data_purchases = self.data_purchases.reset_index()
+        self.data_purchases = self.data_purchases.drop("Person", axis=1)  # To make the 'Person' field just another column and not an index
+        self.data_itemvsuser = self.data_purchases.copy()
+        self.fun = DataHandler()
+        self.user_sim_smaller = self.find_user_similarity()
+        self.get_user_neighbours = self.get_user_neighbours()
+        self.get_user_purchases =  self.get_user_purchases()
+
     def get_dataframe(self, dindex, dcolumns):
         return pd.DataFrame(index=dindex, columns=dcolumns)
 
@@ -22,22 +36,11 @@ class DataHandler:
         return b,a
 
 
-class User:
+class User(DataHandler):
 
-    def __init__(self,file):
-        
-        self.data=pd.read_csv(file)
-        self.data["Quantity"] = 1                                               # Assume that for all items only one quantity was bought
-        self.dataWide = self.data.pivot("Person", "item", "Quantity")           # Converting data from long to wide format
-        self.dataWide.fillna(0, inplace=True)                                   # Replace NA with 0
-        self.data_purchases = self.dataWide.copy()
-        self.data_purchases = self.data_purchases.reset_index()
-        self.data_purchases = self.data_purchases.drop("Person", axis=1)  # To make the 'Person' field just another column and not an index
-        self.data_itemvsuser = self.data_purchases.copy()
-        self.fun = DataHandler()
-        self.user_sim_smaller = self.find_user_similarity()
-        self.get_user_neighbours = self.get_user_neighbours()
-        self.get_user_purchases =  self.get_user_purchases()
+    def __init__(self):
+        self.initialise()
+
 
     def find_user_similarity(self):
 
@@ -72,7 +75,7 @@ class User:
 class Recommender(User):
 
     def __init__(self):
-        User.__init__(self, "/home/vaibhavi/machine-learning/cf_mba/data/groceries.csv")
+        User.__init__(self)
 
     def get_recommendation(self, number, user_number):            # Getting 'number' number of recommendations
         self.recommend = self.fun.get_dataframe(self.user_sim_smaller.columns, range(1, 11))
